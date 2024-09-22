@@ -1,4 +1,4 @@
-# MCEM and MOM Estimation for Binomial and Beta-Binomial Models
+# MOM and MCEM Estimation for Latent Count-Time Models using the Binomial and Beta-Binomial Specifications
 
 This repository contains R scripts implementing the Method of Moments (MOM) and Monte Carlo Expectation-Maximization (MCEM) algorithms for parameter estimation in both the binomial and beta-binomial models. The codes are designed to be easy to use for those who wish to replicate the estimation procedures used in our manuscript.
 
