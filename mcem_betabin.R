@@ -471,7 +471,7 @@ run.mcem.betabin <- function(Y, logT10, N, J, k.in = 5, reps.in = 2, ests.in) {
           mcem_count_bin, 
           Y = Y[index, j], 
           N = N[j], 
-          theta = theta[j, index],  # Extract relevant theta values for passage j
+          theta = theta[, index],  # Extract relevant theta values for passage j
           K = K, 
           method = "BFGS"
         )
@@ -483,7 +483,7 @@ run.mcem.betabin <- function(Y, logT10, N, J, k.in = 5, reps.in = 2, ests.in) {
           mcem_count_bin, 
           Y = Y[index, j], 
           N = N[j], 
-          theta = theta[j, index], 
+          theta = theta[, index], 
           K = K, 
           method = "Nelder-Mead"
         )
@@ -504,7 +504,7 @@ run.mcem.betabin <- function(Y, logT10, N, J, k.in = 5, reps.in = 2, ests.in) {
             b.in = initial_b,
             Y = Y[index, j],
             N = N[j],
-            theta = theta[j, index],
+            theta = theta[, index],
             K = K,
             interval = c(1.0001, N[j] - 0.0001)
           )
@@ -525,7 +525,7 @@ run.mcem.betabin <- function(Y, logT10, N, J, k.in = 5, reps.in = 2, ests.in) {
                   b.in = initial_b,
                   Y = Y[index, j],
                   N = N[j],
-                  theta = theta[j, index],
+                  theta = theta[, index],
                   K = K,
                   interval = c(1.0001, N[j] - 0.0001)
                 )
@@ -555,7 +555,7 @@ run.mcem.betabin <- function(Y, logT10, N, J, k.in = 5, reps.in = 2, ests.in) {
                                            nu = nu.sol$minimum, 
                                            Y = Y[index, j], 
                                            N = N[j], 
-                                           theta = theta[j, index], 
+                                           theta = theta[, index], 
                                            K = K)
       
       # Repeat optimization until a valid (non-NaN) result is obtained
@@ -568,7 +568,7 @@ run.mcem.betabin <- function(Y, logT10, N, J, k.in = 5, reps.in = 2, ests.in) {
                                              nu = nu.sol$minimum, 
                                              Y = Y[index, j], 
                                              N = N[j], 
-                                             theta = theta[j, index], 
+                                             theta = theta[, index], 
                                              K = K)
         initial_a <- backup_a
         initial_b <- backup_b
@@ -585,7 +585,7 @@ run.mcem.betabin <- function(Y, logT10, N, J, k.in = 5, reps.in = 2, ests.in) {
             nu = nu.sol$minimum,
             Y = Y[index, j],
             N = N[j],
-            theta = theta[j, index],
+            theta = theta[, index],
             K = K,
             method = "BFGS"
           )
@@ -598,7 +598,7 @@ run.mcem.betabin <- function(Y, logT10, N, J, k.in = 5, reps.in = 2, ests.in) {
             nu = nu.sol$minimum,
             Y = Y[index, j],
             N = N[j],
-            theta = theta[j, index],
+            theta = theta[, index],
             K = K,
             method = "Nelder-Mead"
           )
@@ -626,11 +626,11 @@ run.mcem.betabin <- function(Y, logT10, N, J, k.in = 5, reps.in = 2, ests.in) {
       if (K > 1) {
         index <- which(!is.na(logT10[, j]))
         # Update 'beta' as the mean of logT10 plus the mean of tau across imputations
-        EM.beta[j] <- mean(logT10[index, j] + apply(tau[j, index, drop = FALSE], 2, mean))
+        EM.beta[j] <- mean(logT10[index, j] + apply(tau[, index, drop = FALSE], 2, mean))
         # Create a matrix for logT10 values
         logT10_vector <- t(matrix(logT10[index, j], nrow = 1))
         # Calculate residuals
-        result <- sweep(tau[j, index, drop = FALSE], 2, logT10_vector, "+") - EM.beta[j]
+        result <- sweep(tau[, index, drop = FALSE], 2, logT10_vector, "+") - EM.beta[j]
         # Calculate inverse of alpha squared
         alp2_inv <- mean(apply(result^2, 2, mean))
         # Update 'alpha' based on residuals
@@ -638,11 +638,11 @@ run.mcem.betabin <- function(Y, logT10, N, J, k.in = 5, reps.in = 2, ests.in) {
       } else {
         index <- which(!is.na(logT10[, j]))
         # Update 'beta' as the mean of logT10 plus tau
-        EM.beta[j] <- mean(logT10[index, j] + tau[j, index])
+        EM.beta[j] <- mean(logT10[index, j] + tau[, index])
         # Create a matrix for logT10 values
         logT10_vector <- t(matrix(logT10[index, j], nrow = 1))
         # Calculate residuals
-        result <- tau[j, index] + logT10_vector - EM.beta[j]
+        result <- tau[, index] + logT10_vector - EM.beta[j]
         # Calculate inverse of alpha squared
         alp2_inv <- mean(result^2)
         # Update 'alpha' based on residuals
